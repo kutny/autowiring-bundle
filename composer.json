@@ -1,0 +1,22 @@
+{
+	"name": "kutny/autowiring-bundle",
+	"type": "symfony-bundle",
+	"description": "A simple library that provides autowiring for the Symfony Dependency Injection (DI) container.",
+	"keywords": ["Autowiring", "Symfony Bundle", "DI", "Dependency Injection"],
+	"homepage": "https://github.com/kutny/autowiring-bundle",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jiri Koutny",
+			"email": "jirkakoutny@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3.2"
+	},
+	"autoload": {
+		"psr-0": { "Kutny\\AutowiringBundle": "" }
+	},
+	"target-dir": "Kutny/AutowiringBundle",
+	"minimum-stability": "dev"
+}
