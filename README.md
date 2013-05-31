@@ -217,3 +217,6 @@ License
 =======
 
 https://github.com/kutny/autowiring-bundle/blob/master/LICENSE
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kutny/autowiring-bundle/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
