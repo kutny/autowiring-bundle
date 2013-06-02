@@ -35,13 +35,15 @@ class ParameterProcessor
             if (count($classes[$class]) === 1) {
                 $value = new Reference($classes[$class][0]);
             } else {
-                throw new MultipleDeclarationException('Multiple service definition for class ' . $class);
+                $serviceNames = implode(', ', $classes[$class]);
+
+                throw new MultipleServicesOfClassException('Multiple services of ' . $class . ' defined (' . $serviceNames . ')');
             }
         } else {
             if ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
             } else {
-                throw new ServiceNotFoundException('Service not defined for class ' . $class);
+                throw new ServiceNotFoundException('Service not found for ' . $class . ' used in ' . $parameter->getDeclaringClass()->getName());
             }
         }
 

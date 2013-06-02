@@ -4,7 +4,7 @@ namespace Kutny\AutowiringBundle\Compiler;
 
 use RuntimeException;
 
-class DuplicateServiceNameException extends RuntimeException
+class MultipleServicesOfClassException extends RuntimeException
 {
 
 }
