@@ -12,7 +12,7 @@ Installation
 
 ~~~~~ json
 "require": {
-    "kutny/autowiring-bundle": "*"
+    "kutny/autowiring-bundle": "dev-master"
 }
 ~~~~~
 
