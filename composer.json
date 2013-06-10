@@ -17,6 +17,5 @@
 	"autoload": {
 		"psr-0": { "Kutny\\AutowiringBundle": "" }
 	},
-	"target-dir": "Kutny/AutowiringBundle",
-	"minimum-stability": "dev"
+	"target-dir": "Kutny/AutowiringBundle"
 }
