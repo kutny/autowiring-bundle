@@ -70,7 +70,7 @@ class AutowiringCompilerPass implements CompilerPassInterface
         $serviceDefinitions = $configLoader->load($pathToConfigFile);
 
         if (!array_key_exists('services', $serviceDefinitions) || !is_array($serviceDefinitions['services'])) {
-            throw new AutowiringException('Services not defined in Symfony config');
+            return array();
         }
 
         $serviceIds = array_keys($serviceDefinitions['services']);
