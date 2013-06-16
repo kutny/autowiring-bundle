@@ -6,8 +6,10 @@ use Kutny\AutowiringBundle\Compiler\ClassConstructorFiller;
 use Kutny\AutowiringBundle\Compiler\ClassListBuilder;
 use ReflectionClass;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\Yaml\Yaml;
 
 class AutowiringCompilerPass implements CompilerPassInterface
@@ -33,6 +35,8 @@ class AutowiringCompilerPass implements CompilerPassInterface
             if (!in_array($serviceId, $servicesForAutowiring)) {
                 continue;
             }
+
+            $this->watchServiceClassForChanges($definition, $containerBuilder);
 
             if (!$definition->isPublic()) {
                 continue;
@@ -76,5 +80,13 @@ class AutowiringCompilerPass implements CompilerPassInterface
         $serviceIds = array_keys($serviceDefinitions['services']);
 
         return $serviceIds;
+    }
+
+    private function watchServiceClassForChanges(Definition $definition, ContainerBuilder $containerBuilder) {
+        $classReflection = new ReflectionClass($definition->getClass());
+
+        do {
+            $containerBuilder->addResource(new FileResource($classReflection->getFileName()));
+        } while ($classReflection = $classReflection->getParentClass());
     }
 }
