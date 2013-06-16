@@ -5,6 +5,8 @@ A simple library that provides autowiring for the Symfony2 Dependency Injection 
 
 This bundle **supports constructor autowiring only**, see http://springindepth.com/book/in-depth-ioc-autowiring.html for description.
 
+**Like this Bundle**? Send me your feedback or just "thank you" message to jirkakoutny@gmail.com.
+
 Installation
 ------------
 
