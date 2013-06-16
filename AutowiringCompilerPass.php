@@ -26,11 +26,11 @@ class AutowiringCompilerPass implements CompilerPassInterface
     {
         $classList = $this->classListBuilder->buildClassList($containerBuilder);
 
-        $servicesForAutoloading = $this->getServicesForAutowiring($containerBuilder);
+        $servicesForAutowiring = $this->getServicesForAutowiring($containerBuilder);
         $parameterBag = $containerBuilder->getParameterBag();
 
         foreach ($containerBuilder->getDefinitions() as $serviceId => $definition) {
-            if (!in_array($serviceId, $servicesForAutoloading)) {
+            if (!in_array($serviceId, $servicesForAutowiring)) {
                 continue;
             }
 
