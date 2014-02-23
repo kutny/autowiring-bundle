@@ -23,6 +23,8 @@ class ClassConstructorFiller
         foreach ($constructor->getParameters() as $index => $parameter) {
             if (array_key_exists($index, $explicitlyDefinedArguments)) {
                 $allArguments[] = $explicitlyDefinedArguments[$index];
+            } else if ($parameter->isDefaultValueAvailable()) {
+                $allArguments[] = $parameter->getDefaultValue();
             } else {
                 $allArguments[] = $this->parameterProcessor->getParameterValue($parameter, $classes);
             }
