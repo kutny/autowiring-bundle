@@ -36,8 +36,9 @@ class ParameterProcessor
                 $value = new Reference($classes[$class][0]);
             } else {
                 $serviceNames = implode(', ', $classes[$class]);
+                $message = 'Multiple services of ' . $class . ' defined (' . $serviceNames . '), class used in ' . $parameter->getDeclaringClass()->getName();
 
-                throw new MultipleServicesOfClassException('Multiple services of ' . $class . ' defined (' . $serviceNames . ')');
+                throw new MultipleServicesOfClassException($message);
             }
         } else {
             if ($parameter->isDefaultValueAvailable()) {
