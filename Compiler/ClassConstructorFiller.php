@@ -15,7 +15,7 @@ class ClassConstructorFiller
         $this->parameterProcessor = $parameterProcessor;
     }
 
-    public function autowireParams(ReflectionMethod $constructor, Definition $definition, array $classes)
+    public function autowireParams(ReflectionMethod $constructor, $serviceId, Definition $definition, array $classes)
     {
         $explicitlyDefinedArguments = $definition->getArguments();
         $allArguments = array();
@@ -26,7 +26,7 @@ class ClassConstructorFiller
             } else if ($parameter->isDefaultValueAvailable()) {
                 $allArguments[] = $parameter->getDefaultValue();
             } else {
-                $allArguments[] = $this->parameterProcessor->getParameterValue($parameter, $classes);
+                $allArguments[] = $this->parameterProcessor->getParameterValue($parameter, $classes, $serviceId);
             }
         }
 

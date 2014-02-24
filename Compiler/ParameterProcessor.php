@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class ParameterProcessor
 {
 
-    public function getParameterValue(ReflectionParameter $parameter, array $classes)
+    public function getParameterValue(ReflectionParameter $parameter, array $classes, $serviceId)
     {
         $parameterClass = $parameter->getClass();
 
@@ -19,8 +19,9 @@ class ParameterProcessor
             if ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
             } else {
-                throw new ParameterNotFoundException('Class ' . $parameter->getDeclaringClass()->getName(
-                ) . ' constructor param $' . $parameter->getName() . ' cannot be resolved');
+                $message = 'Class ' . $parameter->getDeclaringClass()->getName() . ' (service: ' . $serviceId . '), parameter $' . $parameter->getName();
+
+                throw new CannotResolveParameterException($message);
             }
         }
 
