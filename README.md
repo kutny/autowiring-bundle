@@ -32,6 +32,34 @@ public function registerBundles()
 }
 ~~~~~
 
+Configuration
+-------------
+
+In most cases this bundle **does not require any configuration**. However if your app fails to start after installing this bundle giving you Kutny\AutowiringBundle\Compiler\CannotResolveParameterException, you may need to remove some services from autowiring. See example bellow:
+
+**Example 1**:
+
+You are receiving Kutny\AutowiringBundle\Compiler\CannotResolveParameterException with message like "Class Thrace\FormBundle\Form\Type\Select2Type (service **thrace_form.form.type.select2**), parameter $widget".
+
+The problem is that Thrace\FormBundle\Form\Type\Select2Type service definition does not contain explicit $widget argument definition. It is very likely that the Thrace\FormBundle developer just forgot to define the $widget argument.
+KutnyAutowiringBundle expects all services to have all arguments defined (or have default values). As a result we have to disable autowiring for the thrace_form.form.type.select2 service by adding it (as a regular expression) among ignored_services:
+
+~~~~~ yml
+
+kutny_autowiring:
+    ignored_services: ['thrace_form\.form\.type\.select2']
+
+~~~~~
+
+If you run into problems with more services from the Thrace\FormBundle bundle (thrace_form.form.type.select2, thrace_form.form.type.recaptcha, ...), you can easily add the whole "service namespace" to ignored_services using the following reqular expression:
+
+~~~~~ yml
+
+kutny_autowiring:
+    ignored_services: ['thrace_form\.form\.type.*']
+
+~~~~~
+
 Example 1: Simple controller autowiring
 -----------------------------------------
 

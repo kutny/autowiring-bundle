@@ -5,12 +5,10 @@ namespace Kutny\AutowiringBundle;
 use Kutny\AutowiringBundle\Compiler\ClassConstructorFiller;
 use Kutny\AutowiringBundle\Compiler\ClassListBuilder;
 use ReflectionClass;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\Yaml\Yaml;
 
 class AutowiringCompilerPass implements CompilerPassInterface
 {
@@ -27,18 +25,20 @@ class AutowiringCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $containerBuilder)
     {
         $classList = $this->classListBuilder->buildClassList($containerBuilder);
+        $serviceDefinitions = $containerBuilder->getDefinitions();
 
-        $servicesForAutowiring = $this->getServicesForAutowiring($containerBuilder);
-        $parameterBag = $containerBuilder->getParameterBag();
+        $ignoredServicesRegExp = $this->getIgnoredServicesRegExp($containerBuilder);
 
-        foreach ($containerBuilder->getDefinitions() as $serviceId => $definition) {
-            if (!in_array($serviceId, $servicesForAutowiring)) {
+        foreach ($serviceDefinitions as $serviceId => $definition) {
+            if ($definition->isAbstract() || !$definition->isPublic()) {
                 continue;
             }
 
-            $this->watchServiceClassForChanges($definition, $containerBuilder);
+            if ($definition->getClass() === null) {
+                continue;
+            }
 
-            if (!$definition->isPublic()) {
+            if ($ignoredServicesRegExp && preg_match($ignoredServicesRegExp, $serviceId)) {
                 continue;
             }
 
@@ -46,43 +46,30 @@ class AutowiringCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            $class = $parameterBag->resolveValue($definition->getClass());
+            $this->watchServiceClassForChanges($definition, $containerBuilder);
 
-            if ($class === null) {
-                continue;
-            }
-
-            $reflection = new ReflectionClass($class);
+            $reflection = new ReflectionClass($definition->getClass());
             $constructor = $reflection->getConstructor();
 
             if ($constructor !== null && $constructor->isPublic()) {
-                $this->classConstructorFiller->autowireParams($constructor, $definition, $classList);
+                $this->classConstructorFiller->autowireParams($constructor, $serviceId, $definition, $classList);
             }
         }
     }
 
-    private function getServicesForAutowiring(ContainerBuilder $containerBuilder)
+    private function getIgnoredServicesRegExp(ContainerBuilder $containerBuilder)
     {
-        $kernelRootDir = $containerBuilder->getParameter('kernel.root_dir');
-        $symfonyEnvironment = $containerBuilder->getParameter('kernel.environment');
-        $configDirectories = array($kernelRootDir . '/config');
+        $ignoredServices = $containerBuilder->getParameter('kutny_autowiring.ignored_services');
 
-        $pathToConfigFile = $kernelRootDir . '/config/config_' . $symfonyEnvironment . '.yml';
-
-        $fileLocator = new FileLocator($configDirectories);
-        $configLoader = new YamlConfigLoader($fileLocator);
-        $serviceDefinitions = $configLoader->load($pathToConfigFile);
-
-        if (!array_key_exists('services', $serviceDefinitions) || !is_array($serviceDefinitions['services'])) {
-            return array();
+        if (empty($ignoredServices)) {
+            return null;
         }
 
-        $serviceIds = array_keys($serviceDefinitions['services']);
-
-        return $serviceIds;
+        return '~^(' . implode('|', $ignoredServices) . ')$~';
     }
 
-    private function watchServiceClassForChanges(Definition $definition, ContainerBuilder $containerBuilder) {
+    private function watchServiceClassForChanges(Definition $definition, ContainerBuilder $containerBuilder)
+    {
         $classReflection = new ReflectionClass($definition->getClass());
 
         do {
