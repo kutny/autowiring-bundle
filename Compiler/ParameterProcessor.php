@@ -33,9 +33,15 @@ class ParameterProcessor
                 if ($paramAnnotationExists) {
                     $uses = $this->extractUses($method->getDeclaringClass());
                     $parameterClass = $paramAnnotation["type"];
-                    if (isset($uses[$parameterClass])) {
-                        $parameterClass = $uses[$parameterClass];
+                    if ($parameterClass[0] !== "\\") {
+                        if (isset($uses[$parameterClass])) {
+                            $parameterClass = $uses[$parameterClass];
+                        } else {
+                            $parameterClass = $method->getDeclaringClass()->getNamespaceName() . "\\" . $parameterClass;
+                        }
                     }
+
+                    $parameterClass = trim($parameterClass, "\\");
 
                     $value = $this->processParameterClass(new ReflectionClass($parameterClass), $parameter, $classes, true);
                     $resolved = true;
