@@ -91,24 +91,26 @@ class ParameterProcessor
         return $uses;
     }
 
-    private function processParameterClass(ReflectionClass $parameterClass, ReflectionParameter $parameter, $classes, $allowMultiple = false)
+    private function processParameterClass(ReflectionClass $parameterClass, ReflectionParameter $parameter, $classes, $arrayOfServices = false)
     {
         $class = $parameterClass->getName();
 
         if (isset($classes[$class])) {
-            if (count($classes[$class]) === 1) {
-                $value = new Reference($classes[$class][0]);
-
-            } elseif ($allowMultiple) {
+            if ($arrayOfServices) {
                 $value = array_map(function ($serviceId) {
                     return new Reference($serviceId);
                 }, $classes[$class]);
 
             } else {
-                $serviceNames = implode(', ', $classes[$class]);
-                $message = 'Multiple services of ' . $class . ' defined (' . $serviceNames . '), class used in ' . $parameter->getDeclaringClass()->getName();
+                if (count($classes[$class]) === 1) {
+                    $value = new Reference($classes[$class][0]);
 
-                throw new MultipleServicesOfClassException($message);
+                } else {
+                    $serviceNames = implode(', ', $classes[$class]);
+                    $message = 'Multiple services of ' . $class . ' defined (' . $serviceNames . '), class used in ' . $parameter->getDeclaringClass()->getName();
+
+                    throw new MultipleServicesOfClassException($message);
+                }
             }
         } else {
             if ($parameter->isDefaultValueAvailable()) {
