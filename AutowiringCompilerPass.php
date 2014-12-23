@@ -42,7 +42,7 @@ class AutowiringCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            if ($definition->getFactoryClass() || $definition->getFactoryMethod()) {
+            if ($definition->getFactoryClass() || $definition->getFactoryMethod() || (method_exists($definition, 'getFactory') && $definition->getFactory())) {
                 continue;
             }
 
