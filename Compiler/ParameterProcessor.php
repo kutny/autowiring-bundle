@@ -32,6 +32,10 @@ class ParameterProcessor
     {
         $class = $parameterClass->getName();
 
+        if ($class === 'Symfony\Component\DependencyInjection\Container') {
+            return new Reference('service_container');
+        }
+
         if (isset($classes[$class])) {
             if (count($classes[$class]) === 1) {
                 $value = new Reference($classes[$class][0]);
