@@ -10,12 +10,10 @@ This bundle **supports constructor autowiring only**, see http://springindepth.c
 Installation
 ------------
 
-1) Add __kutny/autowiring-bundle__ to your composer.json.
+1) Install via composer:
 
-~~~~~ json
-"require": {
-    "kutny/autowiring-bundle": "dev-master"
-}
+~~~~~ bash
+composer require kutny/autowiring-bundle
 ~~~~~
 
 2) Add KutnyAutowiringBundle to your application kernel
