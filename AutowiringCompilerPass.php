@@ -42,7 +42,7 @@ class AutowiringCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            if ($definition->getFactoryClass() || $definition->getFactoryMethod() || (method_exists($definition, 'getFactory') && $definition->getFactory())) {
+            if ($this->serviceIsCreatedByFactory($definition)) {
                 continue;
             }
 
@@ -66,6 +66,14 @@ class AutowiringCompilerPass implements CompilerPassInterface
         }
 
         return '~^(' . implode('|', $ignoredServices) . ')$~';
+    }
+
+    private function serviceIsCreatedByFactory(Definition $definition)
+    {
+        return
+            (method_exists($definition, 'getFactoryClass') && $definition->getFactoryClass())
+            || (method_exists($definition, 'getFactoryMethod') && $definition->getFactoryMethod())
+            || (method_exists($definition, 'getFactory') && $definition->getFactory());
     }
 
     private function watchServiceClassForChanges(Definition $definition, ContainerBuilder $containerBuilder)
