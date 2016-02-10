@@ -17,5 +17,8 @@
 	"autoload": {
 		"psr-0": { "Kutny\\AutowiringBundle": "" }
 	},
+	"conflict": {
+		"symfony/dependency-injection": "^2.8|^3.0"
+	},
 	"target-dir": "Kutny/AutowiringBundle"
 }
