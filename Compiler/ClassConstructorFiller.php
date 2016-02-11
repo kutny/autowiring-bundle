@@ -26,7 +26,7 @@ class ClassConstructorFiller
             } else if ($parameter->isDefaultValueAvailable()) {
                 $allArguments[] = $parameter->getDefaultValue();
             } else {
-                $allArguments[] = $this->parameterProcessor->getParameterValue($parameter, $classes, $serviceId);
+                $allArguments[] = $this->parameterProcessor->getParameterValue($constructor, $classes, $serviceId, $parameter);
             }
         }
 
